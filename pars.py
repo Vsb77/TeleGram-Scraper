@@ -1,47 +1,45 @@
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
-import os, sys
-import configparser
-import csv
-import time
+import os, sys  #модуль системных
+import configparser # импорт модуля для чтения конфигурации с файла
+import csv # импорт модуля для работы с csv файлами
+import time # импорт модуля время
 
 re="\033[1;31m"
 gr="\033[1;32m"
 cy="\033[1;36m"
+lb = "\033[1;34m"
+wh = "\033[1;37m"
 
 def banner():
     print(f"""
-{re}╔╦╗{cy}┌─┐┬  ┌─┐{re}╔═╗  ╔═╗{cy}┌─┐┬─┐┌─┐┌─┐┌─┐┬─┐
-{re} ║ {cy}├┤ │  ├┤ {re}║ ╦  ╚═╗{cy}│  ├┬┘├─┤├─┘├┤ ├┬┘
-{re} ╩ {cy}└─┘┴─┘└─┘{re}╚═╝  ╚═╝{cy}└─┘┴└─┴ ┴┴  └─┘┴└─
+{re}╔╦╗{cy}┌─┐┌─┐┌─┐┌─┐┬─┐{re}╔═╗
+{re} ║ {cy}├─┐├┤ ├─┘├─┤├┬┘{re}╚═╗
+{re} ╩ {cy}└─┘└─┘┴  ┴ ┴┴└─{re}╚═╝
 
-            version : 3.1
-youtube.com/channel/UCnknCgg_3pVXS27ThLpw3xQ
+
         """)
 
 cpass = configparser.RawConfigParser()
-cpass.read('config.data')
+cpass.read('config.data') # чтение конфигурационного файла config.data
 
 try:
     api_id = cpass['cred']['id']
     api_hash = cpass['cred']['hash']
     phone = cpass['cred']['phone']
-    client = TelegramClient(phone, api_id, api_hash)
+    client = TelegramClient(phone, api_id, api_hash) # извлечение данных
 except KeyError:
-    os.system('clear')
     banner()
-    print(re+"[!] run python3 setup.py first !!\n")
+    print(re+"[!] Конфигурационный файл не найден, выполните: ",lb+"Настройка.bat\n") # если данные не найдены
     sys.exit(1)
 
-client.connect()
+client.connect()  # авторизация пользователя
 if not client.is_user_authorized():
     client.send_code_request(phone)
-    os.system('clear')
     banner()
-    client.sign_in(phone, input(gr+'[+] Enter the code: '+re))
+    client.sign_in(phone, input(gr+'[+] Введите код из Telegram: '+re))
  
-os.system('clear')
 banner()
 chats = []
 last_date = None
@@ -64,22 +62,22 @@ for chat in chats:
     except:
         continue
  
-print(gr+'[+] Choose a group to scrape members :'+re)
+print(gr+'[+] Выберите группу для выгрузки списка  участников :'+re)
 i=0
 for g in groups:
     print(gr+'['+cy+str(i)+gr+']'+cy+' - '+ g.title)
     i+=1
  
 print('')
-g_index = input(gr+"[+] Enter a Number : "+re)
+g_index = input(gr+"[+] Введите номер : "+re)
 target_group=groups[int(g_index)]
  
-print(gr+'[+] Fetching Members...')
+print(gr+'[+] Выгрузка участников...')
 time.sleep(1)
 all_participants = []
-all_participants = client.get_participants(target_group, aggressive=True)
+all_participants = client.get_participants(target_group, aggressive=False) # лимиты по api True False
  
-print(gr+'[+] Saving In file...')
+print(gr+'[+] Сохранение в файл...')
 time.sleep(1)
 with open("members.csv","w",encoding='UTF-8') as f:
     writer = csv.writer(f,delimiter=",",lineterminator="\n")
@@ -99,4 +97,4 @@ with open("members.csv","w",encoding='UTF-8') as f:
             last_name= ""
         name= (first_name + ' ' + last_name).strip()
         writer.writerow([username,user.id,user.access_hash,name,target_group.title, target_group.id])      
-print(gr+'[+] Members scraped successfully.')
+print(gr+'[+] Выгрузка участников выполнена успешно.')

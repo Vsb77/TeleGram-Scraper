@@ -29,27 +29,27 @@
 
 `$ pkg install -y git python`
 
-`$ git clone https://github.com/th3unkn0n/TeleGram-Scraper.git`
+`$ git clone https://github.com/Vsb77/TeleGram-Scraper.git`
 
 `$ cd TeleGram-Scraper`
 
 * Install requierments
 
-`$ python3 setup.py -i`
+ Run the file Настройка.bat
 
 * setup configration file ( apiID, apiHASH )
 
-`$ python3 setup.py -c`
+ Run the file Настройка.bat
 
 * To Genrate User Data
 
-`$ python3 scraper.py`
+ Run the file Парсинг.bat
 
 * ( members.csv is default if you changed name use it )
 * Send Bulk sms To Collected Data 
 
-`$ python3 smsbot.py members.csv`
+ Run the file Рассылка.bat
 
-* Update Tool
+* Adding users
 
-`$ python3 setup.py -u`
+Run the file Инвайтинг.bat
